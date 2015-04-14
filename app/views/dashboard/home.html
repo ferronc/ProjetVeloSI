@@ -8,42 +8,135 @@
     <!-- /.row -->
     <div class="row">
         
-        <stats number="6" comments="New comments!" colour="primary" type="comments"></stats>
-        <stats number="12" comments="New tasks!" colour="primary" type="user"></stats>
-        <stats number="18" comments="New orders!" colour="yellow" type="shopping-cart"></stats>
-        <stats number="24" comments="Support tickets!" colour="red" type="support"></stats>
+        <stats number="6" comments="Vitesse maximale" colour="primary" type="comments"></stats>
+        <stats number="12" comments="Distance totale" colour="primary" type="user"></stats>
+        <stats number="18" comments="Distance max. entre deux charges" colour="yellow" type="shopping-cart"></stats>
+        <stats number="24" comments="Temps depuis la dernière utilisation" colour="red" type="support"></stats>
 
     </div>
     
+    <div class="row">
+        <div class="col-lg-6 col-sm-12" id="line-chart" ng-controller="ChartCtrl">
+            <div class="panel panel-default">
+                <div class="panel-heading">État de charge</div>
+                <div class="panel-body">
+                    <canvas id="line" class="chart chart-line chart-xl" data="line.data" labels="line.labels" legend="true"
+                    click="line.onClick" series="line.series"></canvas>
+                </div>
+            </div>
+        </div> <!-- fin diagramme de charge-->
+
+        <div class="col-lg-6 col-sm-12" id="bar-chart" ng-controller="ChartCtrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">Distance parcourue par jour</div>
+            <div class="panel-body">
+                <canvas id="bar" class="chart chart-bar" data="bar.data" labels="bar.labels" series="bar.series"
+                options="bar.options"></canvas>
+            </div>
+        </div>
+        </div> <!-- fin diagramme de distance-->
+
+    </div> <!-- fin de la row diagrammes -->
+
     <!-- /.panel -->
     <div class="row">
-        <div class="col-lg-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="fa fa-clock-o fa-fw"></i> Responsive Timeline
-                </div>
-                <!-- /.panel-heading -->
-                <timeline></timeline>
-                <!-- /.panel-body -->
-            </div>
-            <!-- /.panel -->
-        </div>
-        <!-- /.col-lg-8 -->
         <div class="col-lg-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> Notifications Panel
+                    <i class="fa fa-star fa-fw"></i> Favoris
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>  <!-- /.table-responsive -->
+            </div> <!-- fin  du tableau Favoris -->
+            </div>
+        </div>  <!-- /.col-lg-4 -->
+
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-clock-o fa-fw"></i> Historique
                 </div>
                 <!-- /.panel-heading -->
-                <notifications></notifications> 
+                <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div> <!-- /.table-responsive -->
+                </div>
+            </div>
+        </div> <!-- /.col-lg-4 -->
+                
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-road fa-fw"></i> Trajets enregistrés
+                </div>
+                <!-- /.panel-heading -->
+                             <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
                 <!-- /.panel-body -->
             </div>
-            <!-- /.panel -->
+        </div> <!-- /.col-lg-4 -->
+    </div> <!-- /.row des tableaux -->
 
-            <chat></chat>
-             <!-- /.panel .chat-panel -->
-        </div>
-        <!-- /.col-lg-4 -->
-    </div>
-    <!-- /.row -->
 </div>
