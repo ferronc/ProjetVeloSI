@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Générateur</title>
+    </head>
+ 
+    <body>
+        <h1>Générateur d'événement !</h1>
+
+        <p><input type="button" value="Charger la batterie" id="chargerBatterie" /></p>
+		<p><input type="button" value="Décharger la batterie" id="dechargerBatterie" /></p>
+		<p><input type="button" value="Distance parcouru actuel" id="distanceParcouru" /></p>
+		<p><input type="button" value="Vitesse actuelle" id="vitesseActuelle" /></p>
+		<p><input type="button" value="Etat batterie" id="etat" /></p>
+		<p><input type="button" value="STOP" id="stop" /></p>
+		
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+			
+			// Variable de l'état de charge de la batterie
+			var chargeBatterie = 50;
+			var cycleCharge = 500;
+			var cycleDecharge = 200;
+			var intervalBatterieCharge;
+			var intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
+			
+			function chargerBatterie(){
+				chargeBatterie++;
+				if(chargeBatterie >= 100){
+					window.clearInterval(intervalBatterieCharge);
+					socket.emit('alarmeFinCharge', 'La charge de la batterie est terminée');
+				}
+				socket.emit('etatBatterie', chargeBatterie);
+			}
+			
+			function dechargerBatterie(){
+				chargeBatterie--;
+				if(chargeBatterie <= 0){
+					window.clearInterval(intervalBatterieDecharge);
+					socket.emit('message', "La batterie est complètement déchargée");
+				}
+				socket.emit('etatBatterie', chargeBatterie);
+			}
+			
+            socket.on('message', function(message) {
+				alert('Le serveur a un message pour vous : ' + message);
+            })
+
+            $('#chargerBatterie').click(function () {
+				window.clearInterval(intervalBatterieDecharge);
+				intervalBatterieCharge = setInterval(function() {chargerBatterie()}, cycleCharge);
+				socket.emit('chargerBatterie', 'La batterie est en charge');
+				socket.emit('etatBatterie', chargeBatterie);
+			})
+			$('#dechargerBatterie').click(function () {
+				intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
+				socket.emit('dechargerBatterie', 'La batterie se décharge');
+				socket.emit('etatBatterie', chargeBatterie);
+			})
+			$('#distanceParcouru').click(function () {
+                socket.emit('distanceParcouru', 'distance parcouru');
+            })
+			$('#vitesseActuelle').click(function () {
+                socket.emit('vitesseActuelle', 'vitesse actuelle');
+            })
+			$('#etat').click(function () {
+                socket.emit('etatBatterie', chargeBatterie);
+            })
+			$('#stop').click(function () {
+                window.clearInterval(intervalBatterieCharge);
+				window.clearInterval(intervalBatterieDecharge);
+            })
+        </script>
+    </body>
+</html>
