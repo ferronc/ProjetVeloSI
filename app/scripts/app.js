@@ -77,18 +77,25 @@ angular
       .state('dashboard.home',{
         url:'/home',
         controller: 'MainCtrl',
-        templateUrl:'views/dashboard/home.html',
+        templateUrl:'views/dashboard/home.html',  
         resolve: {
-          loadMyFiles:function($ocLazyLoad) {
-            return $ocLazyLoad.load({
-              name:'sbAdminApp',
+          loadMyFile:function($ocLazyLoad) {
+            return $ocLazyLoad.load(
+                'bower_components/Chart.js/Chart.min.js'
+            ),
+            $ocLazyLoad.load({
+              name:'chart.js',
               files:[
-              'scripts/controllers/main.js',
-              'scripts/directives/timeline/timeline.js',
-              'scripts/directives/notifications/notifications.js',
-              'scripts/directives/chat/chat.js',
-              'scripts/directives/dashboard/stats/stats.js'
+                'bower_components/angular-chart.js/dist/angular-chart.min.js',
+                'bower_components/angular-chart.js/dist/angular-chart.css'
               ]
+            }),
+            $ocLazyLoad.load({
+                name:'sbAdminApp',
+                files:[
+                'scripts/controllers/main.js', 
+                'scripts/directives/dashboard/stats/stats.js'
+                ]
             })
           }
         }

@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="MainCtrl">
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">Dashboard</h1>
@@ -8,15 +8,15 @@
     <!-- /.row -->
     <div class="row">
         
-        <stats number="6" comments="Vitesse maximale" colour="primary" type="comments"></stats>
-        <stats number="12" comments="Distance totale" colour="primary" type="user"></stats>
-        <stats number="18" comments="Distance max. entre deux charges" colour="yellow" type="shopping-cart"></stats>
-        <stats number="24" comments="Temps depuis la dernière utilisation" colour="red" type="support"></stats>
+        <stats number="{{vitesseMax.data}} km/h" comments="Reccord de vitesse" colour="primary" type="tachometer"></stats>
+        <stats number="{{dTotale.data}} km" comments="Distance totale" colour="green" type="road"></stats>
+        <stats number="{{dMaxEntre2Charges.data}} km" comments="max. entre deux charges" colour="yellow" type="plug"></stats>
+        <stats number="{{tpsSinceLastUse.data}}" comments=" depuis que tu n'as pas pédalé" colour="red" type="clock-o"></stats>
 
     </div>
     
     <div class="row">
-        <div class="col-lg-6 col-sm-12" id="line-chart" ng-controller="ChartCtrl">
+        <div class="col-lg-6 col-sm-12" id="line-chart" >
             <div class="panel panel-default">
                 <div class="panel-heading">État de charge</div>
                 <div class="panel-body">
@@ -26,7 +26,7 @@
             </div>
         </div> <!-- fin diagramme de charge-->
 
-        <div class="col-lg-6 col-sm-12" id="bar-chart" ng-controller="ChartCtrl">
+        <div class="col-lg-6 col-sm-12" id="bar-chart" >
         <div class="panel panel-default">
             <div class="panel-heading">Distance parcourue par jour</div>
             <div class="panel-body">
