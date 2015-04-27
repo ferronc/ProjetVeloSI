@@ -77,6 +77,10 @@ io.sockets.on('connection', function (socket, result) {
 	
 	
 	});
+	
+	sockets.on('message', function (message) {
+		console.log(message);
+	});
 });
 
 
