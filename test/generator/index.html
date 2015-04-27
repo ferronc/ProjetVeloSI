@@ -8,71 +8,172 @@
     <body>
         <h1>Générateur d'événement !</h1>
 
+		<h2>Batterie</h2>
         <p><input type="button" value="Charger la batterie" id="chargerBatterie" /></p>
 		<p><input type="button" value="Décharger la batterie" id="dechargerBatterie" /></p>
-		<p><input type="button" value="Distance parcouru actuel" id="distanceParcouru" /></p>
-		<p><input type="button" value="Vitesse actuelle" id="vitesseActuelle" /></p>
 		<p><input type="button" value="Etat batterie" id="etat" /></p>
+		
+		<h2>Parcours</h2>
+		<p><input type="button" value="Débuter le parcours" id="debuterParcours" /></p>
+		<p><input type="button" value="Stopper le parcours" id="stopperParcours" /></p>
+		<p><input type="button" value="Reprendre le parcours" id="reprendreParcours" /></p>
+		<p><input type="button" value="Distance parcourue" id="distanceParcourue" /></p>
+		<p><input type="button" value="Distance restante" id="distanceRestante" /></p>
+		<p><input type="button" value="Vitesse actuelle" id="vitesseActuelle" /></p>
+		
+		<h2>Interruption</h2>
 		<p><input type="button" value="STOP" id="stop" /></p>
 		
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var socket = io.connect('http://localhost:8080');
+		
+		var socket = io.connect('http://localhost:8080');
+		
+		// Gestion des événements batterie
+		
+		var chargeBatterie = 50; // Etat de charge de la batterie
+		var cycleCharge = 500;	 // Temps du cycle pour chaque itération du chargement de la batterie (en milliseconde)
+		var cycleDecharge = 200; // Temps du cycle pour chaque itération du déchargement de la batterie (en milliseconde)
+		
+		// Timing events (to execute a function, over and over again, at specified time intervals)
+		var intervalBatterieCharge; 
+		var intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
+		
+		/** Permet de charger la batterie */
+		function chargerBatterie(){
+			chargeBatterie++;
+			if(chargeBatterie >= 100){
+				chargeBatterie = 100;
+				// Interruption du timing event
+				window.clearInterval(intervalBatterieCharge); 
+				// On émet un événement 'alarmeFinCharge' vers le serveur
+				socket.emit('message', 'La charge de la batterie est terminée');
+			}
+			socket.emit('etatBatterie', chargeBatterie);
+		}
+		
+		/** Permet de décharger la batterie */
+		function dechargerBatterie(){
+			chargeBatterie--;
+			if(chargeBatterie <= 0){
+				chargeBatterie = 0;
+				window.clearInterval(intervalBatterieDecharge);
+				socket.emit('message', "La batterie est complètement déchargée");
+			}
+			socket.emit('etatBatterie', chargeBatterie);
+		}
+		
+		// Fonctions appelées aux actions réalisées sur les boutons identifiés par leurs identifiants
+		$('#chargerBatterie').click(function () {
+			// Interruption des timing events (pour éviter des précédentes exécution toujours en cours)
+			window.clearInterval(intervalBatterieDecharge);
+			window.clearInterval(intervalBatterieCharge);
+			// On émets les événements associés puis on relance le timing event
+			socket.emit('message', 'La batterie est en charge');
+			socket.emit('etatBatterie', chargeBatterie);
+			intervalBatterieCharge = setInterval(function() {chargerBatterie()}, cycleCharge);
+		})
+		$('#dechargerBatterie').click(function () {
+			window.clearInterval(intervalBatterieCharge);
+			window.clearInterval(intervalBatterieDecharge);
+			socket.emit('message', 'La batterie se décharge');
+			socket.emit('etatBatterie', chargeBatterie);
+			intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
+		})
+		$('#etat').click(function () {
+			socket.emit('etatBatterie', chargeBatterie);
+		})
+		
+		// Gestion des événements parcours
+		
+		var vitesse = 0; // Vitesse courante du vélo
+		var intervalVitesse; // Timing event
+		var cycleVitesse = 1000; // Temps du cycle pour chaque itération de la vitesse (en milliseconde) 
+		var distanceAParcourir = 200; // En mètre
+		var distanceParcourue = 0; // En mètre
+		var aleatoire = 0; // Valeur aléatoire
+		
+		/** Permet de générer la vitesse */
+		function genererVitesse(){
+			// Return a random number between 1 and 7 meter/sec
+			aleatoire = Math.floor((Math.random() * 7) + 1); //generation of the speed
 			
-			// Variable de l'état de charge de la batterie
-			var chargeBatterie = 50;
-			var cycleCharge = 500;
-			var cycleDecharge = 200;
-			var intervalBatterieCharge;
-			var intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
-			
-			function chargerBatterie(){
-				chargeBatterie++;
-				if(chargeBatterie >= 100){
-					window.clearInterval(intervalBatterieCharge);
-					socket.emit('alarmeFinCharge', 'La charge de la batterie est terminée');
-				}
-				socket.emit('etatBatterie', chargeBatterie);
+			// On simule des pentes montantes ou descendantes -> variation de la vitesse
+			if(vitesse > aleatoire){
+				vitesse--;
+			}
+			if(vitesse < aleatoire){
+				vitesse++;
 			}
 			
-			function dechargerBatterie(){
-				chargeBatterie--;
-				if(chargeBatterie <= 0){
-					window.clearInterval(intervalBatterieDecharge);
-					socket.emit('message', "La batterie est complètement déchargée");
-				}
-				socket.emit('etatBatterie', chargeBatterie);
+			// Gestion de la batterie pour vérifier qu'on peut terminer le parcours
+			var tmp = (vitesse*0.1);
+			if(tmp > chargeBatterie){
+				vitesse = 0;
+				tmp = 0;
+				socket.emit('message', 'Un problème est survenu, plus de batterie pour terminer le parcours');
+				window.clearInterval(intervalVitesse);
 			}
 			
-            socket.on('message', function(message) {
-				alert('Le serveur a un message pour vous : ' + message);
-            })
-
-            $('#chargerBatterie').click(function () {
-				window.clearInterval(intervalBatterieDecharge);
-				intervalBatterieCharge = setInterval(function() {chargerBatterie()}, cycleCharge);
-				socket.emit('chargerBatterie', 'La batterie est en charge');
-				socket.emit('etatBatterie', chargeBatterie);
-			})
-			$('#dechargerBatterie').click(function () {
-				intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
-				socket.emit('dechargerBatterie', 'La batterie se décharge');
-				socket.emit('etatBatterie', chargeBatterie);
-			})
-			$('#distanceParcouru').click(function () {
-                socket.emit('distanceParcouru', 'distance parcouru');
-            })
-			$('#vitesseActuelle').click(function () {
-                socket.emit('vitesseActuelle', 'vitesse actuelle');
-            })
-			$('#etat').click(function () {
-                socket.emit('etatBatterie', chargeBatterie);
-            })
-			$('#stop').click(function () {
-                window.clearInterval(intervalBatterieCharge);
-				window.clearInterval(intervalBatterieDecharge);
-            })
+			chargeBatterie -= tmp;
+			socket.emit('etatBatterie', chargeBatterie.toFixed(2));
+			
+			calculParcours();
+		}
+		
+		// Permet d'émettre tous les événements
+		function emitEvents(){
+		
+		}
+		
+		/** Permet de calculer la distance parcourue et restante */
+		function calculParcours(){
+			distanceParcourue += vitesse;
+			distanceAParcourir -= vitesse;
+			socket.emit('distanceParcourue', distanceParcourue);
+			if(distanceAParcourir <= 0){
+				window.clearInterval(intervalVitesse);
+				socket.emit('message', 'Le parcours est terminé, félicitation !');
+			}
+		}
+		
+		// Fonctions appelées aux actions réalisées sur les boutons identifiés par leurs identifiants
+		$('#debuterParcours').click(function () {
+			window.clearInterval(intervalVitesse);
+			socket.emit('message', 'Le parcours commence, distance à parcourir : '+distanceAParcourir);
+			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
+		})
+		
+		$('#stopperParcours').click(function () {
+			window.clearInterval(intervalVitesse);
+			socket.emit('message', 'Vous prenez une pause dans votre parcours');
+		})
+		
+		$('#reprendreParcours').click(function () {
+			window.clearInterval(intervalVitesse);
+			socket.emit('message', 'Vous reprenez votre parcours');
+			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
+		})	
+		
+		$('#distanceParcourue').click(function () {
+			socket.emit('message', 'Distance parcourue : '+distanceParcourue);
+		})
+		$('#vitesseActuelle').click(function () {
+			socket.emit('message', 'Vitesse actuelle : '+vitesse);
+		})
+		$('#distanceRestante').click(function () {
+			socket.emit('message', 'Distance restante : '+distanceAParcourir);
+		})
+		
+		// Interruption
+		
+		$('#stop').click(function () {
+			window.clearInterval(intervalBatterieCharge);
+			window.clearInterval(intervalBatterieDecharge);
+			window.clearInterval(intervalVitesse);
+		})
+		
         </script>
     </body>
 </html>
