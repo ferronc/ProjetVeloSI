@@ -30,11 +30,13 @@
 		
 		var socket = io.connect('http://localhost:8080');
 		
-		// Gestion des événements batterie
+		/* *************************************************
+				Gestion des événements batterie
+		   ************************************************* */
 		
-		var chargeBatterie = 50; // Etat de charge de la batterie
-		var cycleCharge = 500;	 // Temps du cycle pour chaque itération du chargement de la batterie (en milliseconde)
-		var cycleDecharge = 200; // Temps du cycle pour chaque itération du déchargement de la batterie (en milliseconde)
+		var chargeBatterie = 50; 	// Etat de charge de la batterie
+		var cycleCharge = 1000;	 	// Temps du cycle pour chaque itération du chargement de la batterie (en milliseconde)
+		var cycleDecharge = 2000; 	// Temps du cycle pour chaque itération du déchargement de la batterie (en milliseconde)
 		
 		// Timing events (to execute a function, over and over again, at specified time intervals)
 		var intervalBatterieCharge; 
@@ -47,8 +49,8 @@
 				chargeBatterie = 100;
 				// Interruption du timing event
 				window.clearInterval(intervalBatterieCharge); 
-				// On émet un événement 'alarmeFinCharge' vers le serveur
-				socket.emit('message', 'La charge de la batterie est terminée');
+				// On émet un événement 'alarmeFinDeCharge' vers le serveur
+				socket.emit('alarmeFinDeCharge', 'INFO : La charge de la batterie est terminée');
 			}
 			socket.emit('etatBatterie', chargeBatterie);
 		}
@@ -59,7 +61,7 @@
 			if(chargeBatterie <= 0){
 				chargeBatterie = 0;
 				window.clearInterval(intervalBatterieDecharge);
-				socket.emit('message', "La batterie est complètement déchargée");
+				socket.emit('message', "INFO : La batterie est complètement déchargée");
 			}
 			socket.emit('etatBatterie', chargeBatterie);
 		}
@@ -70,14 +72,14 @@
 			window.clearInterval(intervalBatterieDecharge);
 			window.clearInterval(intervalBatterieCharge);
 			// On émets les événements associés puis on relance le timing event
-			socket.emit('message', 'La batterie est en charge');
+			socket.emit('message', 'INFO : La batterie se charge');
 			socket.emit('etatBatterie', chargeBatterie);
 			intervalBatterieCharge = setInterval(function() {chargerBatterie()}, cycleCharge);
 		})
 		$('#dechargerBatterie').click(function () {
 			window.clearInterval(intervalBatterieCharge);
 			window.clearInterval(intervalBatterieDecharge);
-			socket.emit('message', 'La batterie se décharge');
+			socket.emit('message', 'INFO : La batterie se décharge');
 			socket.emit('etatBatterie', chargeBatterie);
 			intervalBatterieDecharge = setInterval(function() {dechargerBatterie()}, cycleDecharge);
 		})
@@ -85,7 +87,9 @@
 			socket.emit('etatBatterie', chargeBatterie);
 		})
 		
-		// Gestion des événements parcours
+		/* ***********************************************
+				Gestion des événements parcours
+		 ************************************************* */
 		
 		var vitesse = 0; // Vitesse courante du vélo
 		var intervalVitesse; // Timing event
@@ -93,6 +97,11 @@
 		var distanceAParcourir = 200; // En mètre
 		var distanceParcourue = 0; // En mètre
 		var aleatoire = 0; // Valeur aléatoire
+		
+		// Variable pour records
+		var vitesseMax = 0;
+		var distanceTotal = 0;
+		var distanceMaxEntreDeuxCharges = 0;
 		
 		/** Permet de générer la vitesse */
 		function genererVitesse(){
@@ -107,12 +116,17 @@
 				vitesse++;
 			}
 			
+			if(vitesse > vitesseMax){
+				vitesseMax = vitesse;
+				socket.emit('recordVitesseMax', vitesseMax);
+			}
+			
 			// Gestion de la batterie pour vérifier qu'on peut terminer le parcours
 			var tmp = (vitesse*0.1);
 			if(tmp > chargeBatterie){
 				vitesse = 0;
 				tmp = 0;
-				socket.emit('message', 'Un problème est survenu, plus de batterie pour terminer le parcours');
+				socket.emit('message', 'INFO : Un problème est survenu, plus de batterie pour terminer le parcours');
 				window.clearInterval(intervalVitesse);
 			}
 			
@@ -122,37 +136,34 @@
 			calculParcours();
 		}
 		
-		// Permet d'émettre tous les événements
-		function emitEvents(){
-		
-		}
-		
 		/** Permet de calculer la distance parcourue et restante */
 		function calculParcours(){
 			distanceParcourue += vitesse;
 			distanceAParcourir -= vitesse;
+			distanceTotal += vitesse;
 			socket.emit('distanceParcourue', distanceParcourue);
+			socket.emit('recordDistanceTotale', distanceTotal);
 			if(distanceAParcourir <= 0){
 				window.clearInterval(intervalVitesse);
-				socket.emit('message', 'Le parcours est terminé, félicitation !');
+				socket.emit('message', 'INFO : Le parcours est terminé, félicitation !');
 			}
 		}
 		
 		// Fonctions appelées aux actions réalisées sur les boutons identifiés par leurs identifiants
 		$('#debuterParcours').click(function () {
 			window.clearInterval(intervalVitesse);
-			socket.emit('message', 'Le parcours commence, distance à parcourir : '+distanceAParcourir);
+			socket.emit('message', 'INFO : Le parcours commence, distance à parcourir : '+distanceAParcourir);
 			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
 		})
 		
 		$('#stopperParcours').click(function () {
 			window.clearInterval(intervalVitesse);
-			socket.emit('message', 'Vous prenez une pause dans votre parcours');
+			socket.emit('message', 'INFO : Vous prenez une pause dans votre parcours');
 		})
 		
 		$('#reprendreParcours').click(function () {
 			window.clearInterval(intervalVitesse);
-			socket.emit('message', 'Vous reprenez votre parcours');
+			socket.emit('message', 'INFO : Vous reprenez votre parcours');
 			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
 		})	
 		
