@@ -98,6 +98,9 @@
 		var distanceParcourue = 0; // En mètre
 		var aleatoire = 0; // Valeur aléatoire
 		
+		var autonomieDebut = 30000;
+		var autonomieActuelle = 30000;
+		
 		// Variable pour records
 		var vitesseMax = 0;
 		var distanceTotal = 0;
@@ -112,7 +115,7 @@
 			if(vitesse > aleatoire){
 				vitesse--;
 			}
-			if(vitesse < aleatoire){
+			else if(vitesse < aleatoire){
 				vitesse++;
 			}
 			
@@ -120,6 +123,8 @@
 				vitesseMax = vitesse;
 				socket.emit('recordVitesseMax', vitesseMax);
 			}
+			
+			//calculAutonomie();
 			
 			// Gestion de la batterie pour vérifier qu'on peut terminer le parcours
 			var tmp = (vitesse*0.1);
@@ -136,13 +141,26 @@
 			calculParcours();
 		}
 		
+		/** Permet de calculer l'autonomie restante donc la distance en mètre */
+		function calculAutonomie(){
+			autonomieDebut = (-10000*(math.sqrt(vitesse)))+30000;
+			if(vitesse == 0)
+			{
+				autonomieDebut = 30000;
+			}
+			// Distance en mètre de l'autonomie restante
+			autonomieActuelle = autonomieActuelle - autonomieDebut;
+			
+			socket.emit('autonomie', autonomieActuelle);
+		}
+		
 		/** Permet de calculer la distance parcourue et restante */
 		function calculParcours(){
 			distanceParcourue += vitesse;
 			distanceAParcourir -= vitesse;
-			distanceTotale += vitesse;
+			//distanceTotale += vitesse;
 			socket.emit('distanceParcourue', distanceParcourue);
-			socket.emit('recordDistanceTotale', distanceTotale);
+			//socket.emit('recordDistanceTotale', distanceTotale);
 			if(distanceAParcourir <= 0){
 				window.clearInterval(intervalVitesse);
 				socket.emit('message', 'INFO : Le parcours est terminé, félicitation !');
@@ -152,6 +170,8 @@
 		// Fonctions appelées aux actions réalisées sur les boutons identifiés par leurs identifiants
 		$('#debuterParcours').click(function () {
 			window.clearInterval(intervalVitesse);
+			window.clearInterval(intervalBatterieCharge);
+			window.clearInterval(intervalBatterieDecharge);
 			socket.emit('message', 'INFO : Le parcours commence, distance à parcourir : '+distanceAParcourir);
 			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
 		})

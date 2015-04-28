@@ -4,12 +4,12 @@ var fs = require('fs');
 var mysql = require('mysql');
 
 // Création de la connexion vers la base de données
-var connection = mysql.createPool({
+var pool = mysql.createPool({
 	connectionLimit : 100,
 	host : 'localhost',
 	database : 'LOUTRE',
 	user : 'root',
-	password : 'root'
+	password : 'toor'
 });
 
 /**
@@ -18,31 +18,21 @@ var connection = mysql.createPool({
  * @param res - Le résultat suite à l'exécution de la requête
  */
 function handle_database(req,res) {
-   
+
     // On récupère la connexion à la base de données
     pool.getConnection(function(err,connection){
-        if (err) {
-          connection.release();
-          res.json({"code" : 100, "status" : "Error in connection database"});
-          return;
-        }  
-
-        console.log('connected as id ' + connection.threadId);
-       
-	   // On exécute la requête
-        connection.query(req ,function(err,rows){
-			// On rend la main si il n'y a pas eu d'erreur
-			connection.release();
-            if(!err) {
-                res.json(rows);
-            }          
-        });
-
-        connection.on('error', function(err) {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;    
-        });
-  });
+		 if (err) { console.log(err); }
+		// On utilise la connexion pour réaliser une requête
+        connection.query(req, function(err, rows) {
+			if (err)	{
+				console.log(err);
+			}else{
+				//console.log( rows );
+			}
+		});
+		// Et on termine avec la connexion
+		connection.release();
+	});
 }
 
 // Chargement du fichier index.html affiché au client
@@ -64,20 +54,20 @@ io.sockets.on('connection', function (socket, result) {
         console.log("Batterie : "+socket.batterie);
 		
 		var requete = 
-		"INSERT INTO Batterie (etat, date)" +
-		"VALUES ("+socket.batterie+", NOW())";
+		"INSERT INTO Batterie (date, etat)" +
+		"VALUES (NOW(), "+socket.batterie+")";
 		
 		handle_database(requete,result);
     });
 
 	// On récupère un évènement sur la distance parcourue
-	sockets.on('distanceParcourue', function (distanceParcourue) {
+	socket.on('distanceParcourue', function (distanceParcourue) {
 		socket.distanceParcourue = distanceParcourue;
         console.log("Distance parcourue : "+socket.distanceParcourue);
 		
 		var requete = 
-		"INSERT INTO Distance (parcourue, date)" +
-		"VALUES ("+socket.distanceParcourue+", NOW())";
+		"INSERT INTO Distance (date, parcourue)" +
+		"VALUES (NOW(), "+socket.distanceParcourue+")";
 		
 		handle_database(requete,result);
 	});
@@ -88,7 +78,7 @@ io.sockets.on('connection', function (socket, result) {
     });
 	
 	// On récupère un évènement sur les records réalisés
-	sockets.on('recordDistanceTotale', function (distanceTotale) {
+	socket.on('recordDistanceTotale', function (distanceTotale) {
 		socket.distanceTotale = distanceTotale;
 		
 		var requete =
@@ -105,10 +95,10 @@ io.sockets.on('connection', function (socket, result) {
 		"UPDATE Etat SET vitesseMax="+socket.vitesseMax;
 		
 		handle_database(requete,result);
-	}
+	});
 	
 	// On récupère un évènement message pour les logs de la console
-	sockets.on('message', function (message) {
+	socket.on('message', function (message) {
 		console.log(message);
 	});
 });
