@@ -92,7 +92,7 @@ io.sockets.on('connection', function (socket, result) {
 		socket.distanceTotale = distanceTotale;
 		
 		var requete =
-		"UPDATE Etat SET distanceTotal="+socket.distanceTotale;
+		"UPDATE Etat SET distanceTotale="+socket.distanceTotale;
 		
 		handle_database(requete,result);
 	});
