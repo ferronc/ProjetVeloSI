@@ -1,0 +1,25 @@
+{
+    "name": "projetVelo",
+	"description" : "Generateur d'evenement un tableau de bord pour velo electrique",
+    "version": "0.2.0",
+    "dependencies": {
+        "express": "~4.12.3",
+        "mysql": "~2.6.2",
+		"socket.io" : "~1.3.5"
+    },
+    "author": {
+		"name": "ErFroc",
+		"email": "ErFroc@users.noreply.github.com"
+	},
+	"contributors": [
+		{
+			"name": "ferronc",
+			"email": "ferronc@users.noreply.github.com"
+		}
+	],
+	"homepage": "https://github.com/ferronc/ProjetVeloSI",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ferronc/ProjetVeloSI"
+	}
+}
