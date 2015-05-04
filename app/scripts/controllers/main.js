@@ -37,6 +37,19 @@ function myFunction(aDate) {
    	return tmp+" ms";
 }
 
+function calcIti(depart, arrive) {
+	var request = {
+		origin:depart,
+		destination:arrive,
+		travelMode: google.maps.TravelMode.BICYCLING
+	};
+	directionsService.route(request, function(result, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(result);
+		}
+	});
+}
+
 
 angular.module('sbAdminApp')
   .controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
@@ -60,8 +73,13 @@ angular.module('sbAdminApp')
     };
 
     $scope.vitesseMax = { data : 6 };
-
     $scope.dTotale = { data : 50 };
     $scope.dMaxEntre2Charges = { data : 15 };
     $scope.tpsSinceLastUse = { data : myFunction(new Date (d)) };
+
+	$scope.batterieVide = {data : true}; // true = caché false = apparait
+	$scope.arretNonVerrouille = {data : true};
+
+    //$scope.itineraire = {data : calcIti(new google.maps.LatLng(40.4,-78), new google.maps.LatLng(42.356,-78.5794))};
+
 }]);
