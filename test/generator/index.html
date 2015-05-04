@@ -103,7 +103,7 @@
 		
 		// Variable pour records
 		var vitesseMax = 0;
-		var distanceTotal = 0;
+		var distanceTotale = 0;
 		var distanceMaxEntreDeuxCharges = 0;
 		
 		/** Permet de générer la vitesse */
@@ -158,9 +158,9 @@
 		function calculParcours(){
 			distanceParcourue += vitesse;
 			distanceAParcourir -= vitesse;
-			//distanceTotale += vitesse;
+			distanceTotale += vitesse;
 			socket.emit('distanceParcourue', distanceParcourue);
-			//socket.emit('recordDistanceTotale', distanceTotale);
+			socket.emit('recordDistanceTotale', distanceTotale);
 			if(distanceAParcourir <= 0){
 				window.clearInterval(intervalVitesse);
 				socket.emit('message', 'INFO : Le parcours est terminé, félicitation !');

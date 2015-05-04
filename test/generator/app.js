@@ -54,8 +54,8 @@ io.sockets.on('connection', function (socket, result) {
         console.log("Batterie : "+socket.batterie);
 		
 		var requete = 
-		"INSERT INTO Batterie (date, etat)" +
-		"VALUES (NOW(), "+socket.batterie+")";
+		"INSERT INTO Batterie (date, time, datetime, etat)" +
+		"VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
 		
 		handle_database(requete,result);
     });
@@ -66,8 +66,8 @@ io.sockets.on('connection', function (socket, result) {
         console.log("Distance parcourue : "+socket.distanceParcourue);
 		
 		var requete = 
-		"INSERT INTO Distance (date, parcourue)" +
-		"VALUES (NOW(), "+socket.distanceParcourue+")";
+		"INSERT INTO Distance (date, time, datetime, parcourue)" +
+		"VALUES (NOW(), NOW(), NOW(), "+socket.distanceParcourue+")";
 		
 		handle_database(requete,result);
 	});

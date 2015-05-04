@@ -15,7 +15,7 @@ var io = require('socket.io')(server);
 
 io.sockets.on('connection', function (socket) {
 
-	var connection = mysql.createPool({connectionLimit : 100, host : 'localhost', database : 'LOUTRE', user : 'root', password : 'root'});
+	var connection = mysql.createPool({connectionLimit : 100, host : 'localhost', database : 'LOUTRE', user : 'root', password : 'toor'});
 	
 	connection.query('SELECT * FROM Etat', function(err, rows, fields) { if (err) throw err; socket.emit('etat', rows); });
 
