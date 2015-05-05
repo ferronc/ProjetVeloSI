@@ -3,7 +3,7 @@
 -- Base de données : Loutre
 -- Auteurs : Erwan FROC & Charles FERRON
 
-DROP DATABASE IF EXISTS `loutre`;
+DROP DATABASE `loutre`;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -55,8 +55,8 @@ INSERT INTO `etat` (`vitesseMax`, `distanceMaxEntreDeuxCharges`) VALUES
 
 CREATE TABLE IF NOT EXISTS `historique` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `depart` CHAR(55) NOT NULL,
-  `arrivee` CHAR(55) NOT NULL,
+  `depart` varchar(55) NOT NULL,
+  `arrivee` varchar(55) NOT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `historique` (
 
 CREATE TABLE IF NOT EXISTS `trajet` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `depart` CHAR(55) NOT NULL,
-  `arrivee` CHAR(55) NOT NULL,
+  `depart` varchar(55) NOT NULL,
+  `arrivee` varchar(55) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `trajet` (
 
 CREATE TABLE IF NOT EXISTS `favoris` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `activite` CHAR(25) NOT NULL,
-  `lieu` CHAR(55) NOT NULL,
+  `activite` varchar(25) NOT NULL,
+  `lieu` varchar(55) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
