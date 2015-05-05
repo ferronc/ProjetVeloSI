@@ -37,6 +37,12 @@ function myFunction(aDate) {
    	return tmp+" ms";
 }
 
+
+var directionsDisplay = new google.maps.DirectionsRenderer();;
+var directionsService = new google.maps.DirectionsService();
+	 //console.log($scope.map);
+      //directionsDisplay.setMap($scope.map);
+
 function calcIti(depart, arrive) {
 	var request = {
 		origin:depart,
@@ -48,7 +54,7 @@ function calcIti(depart, arrive) {
 			directionsDisplay.setDirections(result);
 		}
 	});
-}
+}	 
 
 
 angular.module('sbAdminApp')
@@ -80,6 +86,6 @@ angular.module('sbAdminApp')
 	$scope.batterieVide = {data : true}; // true = caché false = apparait
 	$scope.arretNonVerrouille = {data : true};
 
-    //$scope.itineraire = {data : calcIti(new google.maps.LatLng(40.4,-78), new google.maps.LatLng(42.356,-78.5794))};
+    //$scope.itineraire = {calcIti(new google.maps.LatLng(37.891586,-4.7844853), new google.maps.LatLng(42.356,-78.5794))};
 
 }]);
