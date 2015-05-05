@@ -57,10 +57,13 @@ function calcIti(depart, arrive) {
 }	 
 
 
-angular.module('sbAdminApp').controller('MainCtrl', function ($scope, $timeout, $http) {
+var app = angular.module('sbAdminApp', []);
 
-  	$http.get("http://localhost:8080/index.html").success(function (response) {$scope.names = response.records;});
-  	console.log($scope.names);
+app.controller('MainCtrl', function ($scope, $timeout, $http) {
+
+  	//$http.get("http://localhost:8080/index.html").success(function (response) {$scope.names = response.records;});
+  	//console.log($scope.names);
+
     $scope.line = {
 	    labels: [ h-6, h-5, h-4, h-3, h-2, h-1, h],
 	    series: ['Batterie'],
