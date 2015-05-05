@@ -109,11 +109,46 @@ io.sockets.on('connection', function (socket, result) {
 		handle_database(requete);
 	});
 	
+	// Ajouter favoris
+	socket.on('ajouterFavoris', function (data) {
+		var activite = ""+data.act;
+		var lieu = ""+data.lie;
+		
+		var requete =
+		"INSERT INTO Favoris (activite, lieu)" +
+		" VALUES (\'"+activite+"\', \'"+lieu+"\')";
+		
+		handle_database(requete);
+	});
+	
+	// Ajouter historique
+	socket.on('ajouterHistorique', function (data) {
+		var depart = ""+data.dep;
+		var arrivee = ""+data.arr;
+		
+		var requete =
+		"INSERT INTO Historique (depart, arrivee, date)" +
+		" VALUES (\'"+depart+"\', \'"+arrivee+"\', NOW())";
+		
+		handle_database(requete);
+	});
+	
+	// Ajouter trajet enregistré
+	socket.on('ajouterTrajet', function (data) {
+		var depart = ""+data.dep;
+		var arrivee = ""+data.arr;
+		
+		var requete =
+		"INSERT INTO Trajet (depart, arrivee)" +
+		" VALUES (\'"+depart+"\',\'"+arrivee+"\')";
+		
+		handle_database(requete);
+	});
+	
 	// On récupère un évènement message pour les logs de la console
 	socket.on('message', function (message) {
 		console.log(message);
 	});
 });
-
 
 server.listen(8080);
