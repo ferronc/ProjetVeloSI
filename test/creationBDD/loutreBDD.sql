@@ -3,7 +3,7 @@
 -- Base de données : Loutre
 -- Auteurs : Erwan FROC & Charles FERRON
 
-DROP DATABASE `loutre`;
+DROP DATABASE IF EXISTS `loutre`;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
