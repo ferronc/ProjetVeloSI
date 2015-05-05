@@ -57,8 +57,10 @@ function calcIti(depart, arrive) {
 }	 
 
 
-angular.module('sbAdminApp')
-  .controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+angular.module('sbAdminApp').controller('MainCtrl', function ($scope, $timeout, $http) {
+
+  	$http.get("http://localhost:8080/index.html").success(function (response) {$scope.names = response.records;});
+  	console.log($scope.names);
     $scope.line = {
 	    labels: [ h-6, h-5, h-4, h-3, h-2, h-1, h],
 	    series: ['Batterie'],
@@ -88,4 +90,4 @@ angular.module('sbAdminApp')
 
     //$scope.itineraire = {calcIti(new google.maps.LatLng(37.891586,-4.7844853), new google.maps.LatLng(42.356,-78.5794))};
 
-}]);
+});
