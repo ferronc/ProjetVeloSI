@@ -7,30 +7,30 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	connectionLimit : 100,
 	host : 'localhost',
-	database : 'LOUTRE',
+	database : 'loutre',
 	user : 'root',
 	password : 'toor'
 });
 
 /**
- * Permet de réaliser une requête sur la base de données
- * @param req - La requête à exécuter
- * @param res - Le résultat suite à l'exécution de la requête
+ * Permet de réaliser une requête d'insertion ou d'update sur la base de données
+ * @param req - La requête d'insertion ou d'update à exécuter
  */
-function handle_database(req,res) {
+function handle_database(req) {
 
     // On récupère la connexion à la base de données
     pool.getConnection(function(err,connection){
 		 if (err) { console.log(err); }
-		// On utilise la connexion pour réaliser une requête
-        connection.query(req, function(err, rows) {
+		// On utilise la connexion pour réaliser une requête		
+		connection.query(req, function(err, rows) {
 			if (err)	{
 				console.log(err);
 			}else{
-				//console.log( rows );
+				//console.log(rows);
 			}
 		});
-		// Et on termine avec la connexion
+		
+		// On libère la connexion
 		connection.release();
 	});
 }
@@ -55,9 +55,9 @@ io.sockets.on('connection', function (socket, result) {
 		
 		var requete = 
 		"INSERT INTO Batterie (date, time, datetime, etat)" +
-		"VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
+		" VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
 		
-		handle_database(requete,result);
+		handle_database(requete);
     });
 
 	// On récupère un évènement sur la distance parcourue
@@ -67,9 +67,9 @@ io.sockets.on('connection', function (socket, result) {
 		
 		var requete = 
 		"INSERT INTO Distance (date, time, datetime, parcourue)" +
-		"VALUES (NOW(), NOW(), NOW(), "+socket.distanceParcourue+")";
+		" VALUES (NOW(), NOW(), NOW(), "+socket.distanceParcourue+")";
 		
-		handle_database(requete,result);
+		handle_database(requete);
 	});
 	
 	// On récupère un évènement pour l'alarme de fin de charge
@@ -77,14 +77,26 @@ io.sockets.on('connection', function (socket, result) {
         console.log(message);
     });
 	
-	// On récupère un évènement sur les records réalisés
-	socket.on('recordDistanceTotale', function (distanceTotale) {
-		socket.distanceTotale = distanceTotale;
+	// On récupère un évènement sur les records de distance max réalisée entre deux charges
+	socket.on('recordDistanceMax', function (distanceMaxEntreDeuxCharges) {
+		socket.distanceMaxEntreDeuxCharges = distanceMaxEntreDeuxCharges;
 		
-		var requete =
-		"UPDATE Etat SET distanceTotale="+socket.distanceTotale;
+		var requete1 = "SELECT distanceMaxEntreDeuxCharges FROM Etat"
+		var result1 = 0;
 		
-		handle_database(requete,result);
+		pool.query(requete1, function(err, rows, fields) {
+			if (err) {
+				throw err;
+			}
+			result1 = rows[0].distanceMaxEntreDeuxCharges;
+		});
+		
+		if(socket.distanceMaxEntreDeuxCharges > result1){
+			var requete2 =
+			"UPDATE Etat SET distanceMaxEntreDeuxCharges="+socket.distanceMaxEntreDeuxCharges;
+		
+			handle_database(requete2);
+		}
 	});
 	
 	// On récupère un évènement sur les records de vitesse max
@@ -94,7 +106,7 @@ io.sockets.on('connection', function (socket, result) {
 		var requete =
 		"UPDATE Etat SET vitesseMax="+socket.vitesseMax;
 		
-		handle_database(requete,result);
+		handle_database(requete);
 	});
 	
 	// On récupère un évènement message pour les logs de la console

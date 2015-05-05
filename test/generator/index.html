@@ -30,6 +30,11 @@
 		
 		var socket = io.connect('http://localhost:8080');
 		
+		// Variable pour records
+		var vitesseMax = 0;
+		var distanceTotale = 0;
+		var distanceMaxEntreDeuxCharges = 0;
+		
 		/* *************************************************
 				Gestion des événements batterie
 		   ************************************************* */
@@ -52,7 +57,7 @@
 				// On émet un événement 'alarmeFinDeCharge' vers le serveur
 				socket.emit('alarmeFinDeCharge', 'INFO : La charge de la batterie est terminée');
 			}
-			socket.emit('etatBatterie', chargeBatterie);
+			socket.emit('etatBatterie', chargeBatterie.toFixed(2));
 		}
 		
 		/** Permet de décharger la batterie */
@@ -62,8 +67,11 @@
 				chargeBatterie = 0;
 				window.clearInterval(intervalBatterieDecharge);
 				socket.emit('message', "INFO : La batterie est complètement déchargée");
+				// On émet les données records entre deux rechargement
+				socket.emit('recordDistanceMax', distanceMaxEntreDeuxCharges);
+				distanceMaxEntreDeuxCharges = 0;
 			}
-			socket.emit('etatBatterie', chargeBatterie);
+			socket.emit('etatBatterie', chargeBatterie.toFixed(2));
 		}
 		
 		// Fonctions appelées aux actions réalisées sur les boutons identifiés par leurs identifiants
@@ -101,15 +109,10 @@
 		var autonomieDebut = 30000;
 		var autonomieActuelle = 30000;
 		
-		// Variable pour records
-		var vitesseMax = 0;
-		var distanceTotale = 0;
-		var distanceMaxEntreDeuxCharges = 0;
-		
 		/** Permet de générer la vitesse */
 		function genererVitesse(){
-			// Return a random number between 1 and 7 meter/sec
-			aleatoire = Math.floor((Math.random() * 7) + 1); //generation of the speed
+			// Return a random number between 1 and 10 meter/sec
+			aleatoire = Math.floor((Math.random() * 10) + 1); //generation of the speed
 			
 			// On simule des pentes montantes ou descendantes -> variation de la vitesse
 			if(vitesse > aleatoire){
@@ -159,6 +162,7 @@
 			distanceParcourue += vitesse;
 			distanceAParcourir -= vitesse;
 			distanceTotale += vitesse;
+			distanceMaxEntreDeuxCharges += vitesse;
 			socket.emit('distanceParcourue', distanceParcourue);
 			socket.emit('recordDistanceTotale', distanceTotale);
 			if(distanceAParcourir <= 0){
@@ -190,9 +194,11 @@
 		$('#distanceParcourue').click(function () {
 			socket.emit('message', 'Distance parcourue : '+distanceParcourue);
 		})
+		
 		$('#vitesseActuelle').click(function () {
 			socket.emit('message', 'Vitesse actuelle : '+vitesse);
 		})
+		
 		$('#distanceRestante').click(function () {
 			socket.emit('message', 'Distance restante : '+distanceAParcourir);
 		})
