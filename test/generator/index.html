@@ -3,26 +3,63 @@
     <head>
         <meta charset="utf-8" />
         <title>Générateur</title>
+		<style type="text/css">
+			.box{
+				display: inline-block;
+				width: 200px;
+				margin: 1em;
+				padding:10px 10px 10px 10px;
+			}	
+		</style>
     </head>
  
     <body>
         <h1>Générateur d'événement !</h1>
-
-		<h2>Batterie</h2>
-        <p><input type="button" value="Charger la batterie" id="chargerBatterie" /></p>
-		<p><input type="button" value="Décharger la batterie" id="dechargerBatterie" /></p>
-		<p><input type="button" value="Etat batterie" id="etat" /></p>
 		
-		<h2>Parcours</h2>
-		<p><input type="button" value="Débuter le parcours" id="debuterParcours" /></p>
-		<p><input type="button" value="Stopper le parcours" id="stopperParcours" /></p>
-		<p><input type="button" value="Reprendre le parcours" id="reprendreParcours" /></p>
-		<p><input type="button" value="Distance parcourue" id="distanceParcourue" /></p>
-		<p><input type="button" value="Distance restante" id="distanceRestante" /></p>
-		<p><input type="button" value="Vitesse actuelle" id="vitesseActuelle" /></p>
+		<div id="colonne1" class="box" style="background: lightblue;">
+			<h2>Batterie</h2>
+			<p><input type="button" value="Charger la batterie" id="chargerBatterie" /></p>
+			<p><input type="button" value="Décharger la batterie" id="dechargerBatterie" /></p>
+			<p><input type="button" value="Etat batterie" id="etat" /></p>
+		</div>
 		
-		<h2>Interruption</h2>
-		<p><input type="button" value="STOP" id="stop" /></p>
+		<div id="colonne2" class="box" style="background: burlywood;">
+			<h2>Parcours</h2>
+			<p>Distance du parcours (m) : <input type="text" value="200" id="distanceInputText" /></p>
+			<p><input type="button" value="Débuter le parcours" id="debuterParcours" /></p>
+			<p><input type="button" value="Stopper le parcours" id="stopperParcours" /></p>				
+			<p><input type="button" value="Reprendre le parcours" id="reprendreParcours" /></p>
+		</div>
+		
+		<div id="colonne3" class="box" style="background: khaki;">
+			<h2>Compléments</h2>
+			<p><input type="button" value="STOP" id="stop" /></p>
+			<p><input type="button" value="Distance parcourue" id="distanceParcourue" /></p>
+			<p><input type="button" value="Distance restante" id="distanceRestante" /></p>
+			<p><input type="button" value="Distance totale" id="distanceTotale" /></p>
+			<p><input type="button" value="Vitesse actuelle" id="vitesseActuelle" /></p>
+		</div>
+		<br />
+		<div id="colonne4" class="box" style="background: lightblue;">
+			<h2>Favoris</h2>
+			<p>Activité : <input type="text" value="Autres" id="favorisActiviteInputText" /></p>
+			<p>Lieu : <input type="text" value="Quelque part" id="lieuActiviteInputText" /></p>
+			<p><input type="button" value="Ajouter" id="ajouterFavoris" /></p>
+		</div>
+		
+		<div id="colonne5" class="box" style="background: burlywood;">
+			<h2>Historique</h2>
+			<p>Départ : <input type="text" value="Départ A" id="departHistoriqeInputText" /></p>
+			<p>Arrivée : <input type="text" value="Arrivé B" id="arriveeHistoriqueInputText" /></p>
+			<p><input type="button" value="Ajouter" id="ajouterHistorique" /></p>
+		</div>
+		
+		<div id="colonne6" class="box" style="background: khaki;">
+			<h2>Trajet enregistré</h2>
+			<p>Départ : <input type="text" value="Autres" id="departTrajetInputText" /></p>
+			<p>Arrivée : <input type="text" value="Quelque part" id="arriveeTrajetInputText" /></p>
+			<p><input type="button" value="Ajouter" id="ajouterTrajet" /></p>
+		</div>
 		
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -32,7 +69,6 @@
 		
 		// Variable pour records
 		var vitesseMax = 0;
-		var distanceTotale = 0;
 		var distanceMaxEntreDeuxCharges = 0;
 		
 		/* *************************************************
@@ -102,7 +138,7 @@
 		var vitesse = 0; // Vitesse courante du vélo
 		var intervalVitesse; // Timing event
 		var cycleVitesse = 1000; // Temps du cycle pour chaque itération de la vitesse (en milliseconde) 
-		var distanceAParcourir = 200; // En mètre
+		var distanceAParcourir = document.getElementById("distanceInputText").value; // En mètre
 		var distanceParcourue = 0; // En mètre
 		var aleatoire = 0; // Valeur aléatoire
 		
@@ -161,10 +197,8 @@
 		function calculParcours(){
 			distanceParcourue += vitesse;
 			distanceAParcourir -= vitesse;
-			distanceTotale += vitesse;
 			distanceMaxEntreDeuxCharges += vitesse;
 			socket.emit('distanceParcourue', distanceParcourue);
-			socket.emit('recordDistanceTotale', distanceTotale);
 			if(distanceAParcourir <= 0){
 				window.clearInterval(intervalVitesse);
 				socket.emit('message', 'INFO : Le parcours est terminé, félicitation !');
@@ -176,34 +210,81 @@
 			window.clearInterval(intervalVitesse);
 			window.clearInterval(intervalBatterieCharge);
 			window.clearInterval(intervalBatterieDecharge);
+			if(distanceAParcourir <= 0){
+				distanceAParcourir = document.getElementById("distanceInputText").value;
+				distanceParcourue = 0;
+			}
 			socket.emit('message', 'INFO : Le parcours commence, distance à parcourir : '+distanceAParcourir);
 			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
 		})
 		
 		$('#stopperParcours').click(function () {
-			window.clearInterval(intervalVitesse);
-			socket.emit('message', 'INFO : Vous prenez une pause dans votre parcours');
+			if(distanceParcourue > 0){
+				window.clearInterval(intervalVitesse);
+				socket.emit('message', 'INFO : Vous prenez une pause dans votre parcours');
+			}
 		})
 		
 		$('#reprendreParcours').click(function () {
-			window.clearInterval(intervalVitesse);
-			socket.emit('message', 'INFO : Vous reprenez votre parcours');
-			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
+			if(distanceAParcourir > 0){
+				window.clearInterval(intervalVitesse);
+				socket.emit('message', 'INFO : Vous reprenez votre parcours');
+				intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
+			}
 		})	
 		
 		$('#distanceParcourue').click(function () {
 			socket.emit('message', 'Distance parcourue : '+distanceParcourue);
 		})
 		
-		$('#vitesseActuelle').click(function () {
-			socket.emit('message', 'Vitesse actuelle : '+vitesse);
-		})
-		
 		$('#distanceRestante').click(function () {
 			socket.emit('message', 'Distance restante : '+distanceAParcourir);
 		})
 		
-		// Interruption
+		$('#distanceTotale').click(function () {
+			socket.emit('message', 'distanceTotale : '+distanceMaxEntreDeuxCharges);
+		})
+		
+		$('#vitesseActuelle').click(function () {
+			socket.emit('message', 'Vitesse actuelle : '+vitesse);
+		})
+		
+		/* ***********************************************
+				Gestion des favoris
+		 ************************************************* */
+		
+		$('#ajouterFavoris').click(function () {
+			var activite = document.getElementById("favorisActiviteInputText").value;
+			var lieu = document.getElementById("lieuActiviteInputText").value;
+			
+			socket.emit('ajouterFavoris', {act: activite, lie : lieu});
+		})
+		
+		/* ***********************************************
+				Gestion des historiques
+		 ************************************************* */
+		
+		$('#ajouterHistorique').click(function () {
+			var depart = document.getElementById("departHistoriqeInputText").value;
+			var arrivee = document.getElementById("arriveeHistoriqueInputText").value;
+			
+			socket.emit('ajouterHistorique', {dep: depart, arr : arrivee});
+		})
+		
+		/* ***********************************************
+				Gestion des trajets enregistrés
+		 ************************************************* */
+		
+		$('#ajouterTrajet').click(function () {
+			var depart = document.getElementById("departTrajetInputText").value;
+			var arrivee = document.getElementById("arriveeTrajetInputText").value;
+			
+			socket.emit('ajouterTrajet', {dep: depart, arr : arrivee});
+		})
+		
+		/* ***********************************************
+				Gestion interruption
+		 ************************************************* */
 		
 		$('#stop').click(function () {
 			window.clearInterval(intervalBatterieCharge);
