@@ -82,3 +82,14 @@ CREATE TABLE IF NOT EXISTS `favoris` (
   `lieu` varchar(55) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Structure de la table `deplacement`
+--
+CREATE TABLE IF NOT EXISTS `deplacement` (
+  `latitude` int(11) NOT NULL,
+  `longitude` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `datetime` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

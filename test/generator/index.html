@@ -145,6 +145,9 @@
 		var autonomieDebut = 30000;
 		var autonomieActuelle = 30000;
 		
+		var latitude = 45; // Latitude 
+		var longitude = 0; // Longitude
+		
 		/** Permet de générer la vitesse */
 		function genererVitesse(){
 			// Return a random number between 1 and 10 meter/sec
@@ -177,7 +180,62 @@
 			chargeBatterie -= tmp;
 			socket.emit('etatBatterie', chargeBatterie.toFixed(2));
 			
+			// On met à jour les données suite à la nouvelle vitesse appliquée pour l'instant t
 			calculParcours();
+			simulerDeplacement();
+		}
+		
+		function incrementerLatitude(){
+			if(latitude <= 84){
+				latitude++;
+			}
+		}
+		
+		function incrementerLongitude(){
+			if(longitude <= 179){
+				longitude++;
+			}
+		}
+		
+		function decrementerLatitude(){
+			if(latitude >= -84){
+				latitude--; 
+			}
+		}
+		
+		function decrementerLongitude(){
+			if(longitude >= -179){
+				longitude--;
+			}
+		}
+		
+		/**
+		 * Permet de simuler un déplacement en modifiant la latitude et la longitude
+		 */
+		function simulerDeplacement(){
+			// Return a random number between -85 and +85
+			aleatoireLatitude = Math.floor((Math.random() * 85) - 85);
+			
+			// On se déplace petit à petit
+			if(latitude > aleatoireLatitude){
+				decrementerLatitude();
+			}
+			else if(latitude < aleatoireLatitude){
+				incrementerLatitude();
+			}
+			
+			// Return a random number between -180 and +180
+			aleatoireLongitude = Math.floor((Math.random() * 180) - 180);
+			
+			if(longitude > aleatoireLongitude){
+				decrementerLongitude();
+			}
+			else if(longitude < aleatoireLongitude){
+				incrementerLongitude();
+			}
+			
+			// On émet le nouveau déplacement
+			socket.emit('deplacement', {lat: latitude, lon : longitude});
 		}
 		
 		/** Permet de calculer l'autonomie restante donc la distance en mètre */

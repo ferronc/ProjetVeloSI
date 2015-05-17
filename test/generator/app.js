@@ -145,6 +145,18 @@ io.sockets.on('connection', function (socket, result) {
 		handle_database(requete);
 	});
 	
+	// Ajouter déplacement
+	socket.on('deplacement', function (data) {
+		var latitude = data.lat;
+		var longitude = data.lon;
+		
+		var requete =
+		"INSERT INTO Deplacement (latitude, longitude, date, time, datetime)" +
+		" VALUES ("+latitude+", "+longitude+", NOW(), NOW(), NOW())";
+		
+		handle_database(requete);
+	});
+	
 	// On récupère un évènement message pour les logs de la console
 	socket.on('message', function (message) {
 		console.log(message);
