@@ -7,16 +7,20 @@
  *
  * Main module of the application.
  */
-angular
+var app = angular
   .module('sbAdminApp', [
     'oc.lazyLoad',
     'ui.router',
     'ui.bootstrap',
     'angular-loading-bar',
-    'ngMap'
+    'ngMap',
   ])
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider) {
-    
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider','$httpProvider',function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider,$httpProvider) {
+
+    $httpProvider.defaults.withCredentials = true;
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
     $ocLazyLoadProvider.config({
       debug:false,
       events:true,
@@ -112,5 +116,3 @@ angular
         url:'/notifications'
     })
   }]);
-
-    

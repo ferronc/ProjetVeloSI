@@ -1,3 +1,15 @@
+<script>
+    var data = {vitesseMax:"", distanceTotale:"", distanceMaxEntreDeuxCharges:"",dernierUtilisation:"",etatCharge:""}; 
+    var socket = new WebSocket ("ws://localhost:8080");
+
+    socket.onmessage = function(e)
+    {
+        console.log (e);
+    }
+</script>
+ 
+<body id="main"></boby>
+
 <div ng-controller="MainCtrl">
     <div class="row">
         <div class="col-lg-12">

@@ -1,4 +1,3 @@
-'use strict';
 /**
  * @ngdoc function
  * @name sbAdminApp.controller:MainCtrl
@@ -56,13 +55,9 @@ function calcIti(depart, arrive) {
 	});
 }	 
 
+var app = angular.module('sbAdminApp');
 
-var app = angular.module('sbAdminApp', []);
-
-app.controller('MainCtrl', function ($scope, $timeout, $http) {
-
-  	//$http.get("http://localhost:8080/index.html").success(function (response) {$scope.names = response.records;});
-  	//console.log($scope.names);
+app.controller('MainCtrl', function ($scope, $timeout) {
 
     $scope.line = {
 	    labels: [ h-6, h-5, h-4, h-3, h-2, h-1, h],

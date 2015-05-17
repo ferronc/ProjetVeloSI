@@ -5,16 +5,12 @@
         <title>VSO</title>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var data = {etat:"", distance:"", batterie:""}; 
+            var data; 
             var socket = io.connect('http://localhost:8080');
 
             socket.emit('connection');
             
-            socket.on('etat', function(message) { data.etat = message; document.getElementById("main").innerHTML = JSON.stringify(data); });
-
-            socket.on('distance', function(message) { data.distance = message; document.getElementById("main").innerHTML = JSON.stringify(data); });
-
-            socket.on('batterie', function(message) { data.batterie = message; document.getElementById("main").innerHTML = JSON.stringify(data); });       
+            socket.on('data', function(message) { data = message; document.getElementById("main").innerHTML = JSON.stringify(data); });
         </script>
     </head>
  
