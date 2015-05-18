@@ -54,7 +54,7 @@ io.sockets.on('connection', function (socket, result) {
         console.log("Batterie : "+socket.batterie);
 		
 		var requete = 
-		"INSERT INTO Batterie (date, time, datetime, etat)" +
+		"INSERT INTO batterie (date, time, datetime, etat)" +
 		" VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
 		
 		handle_database(requete);
@@ -66,7 +66,7 @@ io.sockets.on('connection', function (socket, result) {
         console.log("Distance parcourue : "+socket.distanceParcourue);
 		
 		var requete = 
-		"INSERT INTO Distance (date, time, datetime, parcourue)" +
+		"INSERT INTO distance (date, time, datetime, parcourue)" +
 		" VALUES (NOW(), NOW(), NOW(), "+socket.distanceParcourue+")";
 		
 		handle_database(requete);
@@ -81,7 +81,7 @@ io.sockets.on('connection', function (socket, result) {
 	socket.on('recordDistanceMax', function (distanceMaxEntreDeuxCharges) {
 		socket.distanceMaxEntreDeuxCharges = distanceMaxEntreDeuxCharges;
 		
-		var requete1 = "SELECT distanceMaxEntreDeuxCharges FROM Etat"
+		var requete1 = "SELECT distanceMaxEntreDeuxCharges FROM etat"
 		var result1 = 0;
 		
 		pool.query(requete1, function(err, rows, fields) {
@@ -93,7 +93,7 @@ io.sockets.on('connection', function (socket, result) {
 		
 		if(socket.distanceMaxEntreDeuxCharges > result1){
 			var requete2 =
-			"UPDATE Etat SET distanceMaxEntreDeuxCharges="+socket.distanceMaxEntreDeuxCharges;
+			"UPDATE etat SET distanceMaxEntreDeuxCharges="+socket.distanceMaxEntreDeuxCharges;
 		
 			handle_database(requete2);
 		}
@@ -104,7 +104,7 @@ io.sockets.on('connection', function (socket, result) {
 		socket.vitesseMax = vitesseMax;
 		
 		var requete =
-		"UPDATE Etat SET vitesseMax="+socket.vitesseMax;
+		"UPDATE etat SET vitesseMax="+socket.vitesseMax;
 		
 		handle_database(requete);
 	});
@@ -115,7 +115,7 @@ io.sockets.on('connection', function (socket, result) {
 		var lieu = ""+data.lie;
 		
 		var requete =
-		"INSERT INTO Favoris (activite, lieu)" +
+		"INSERT INTO favoris (activite, lieu)" +
 		" VALUES (\'"+activite+"\', \'"+lieu+"\')";
 		
 		handle_database(requete);
@@ -127,7 +127,7 @@ io.sockets.on('connection', function (socket, result) {
 		var arrivee = ""+data.arr;
 		
 		var requete =
-		"INSERT INTO Historique (depart, arrivee, date)" +
+		"INSERT INTO historique (depart, arrivee, date)" +
 		" VALUES (\'"+depart+"\', \'"+arrivee+"\', NOW())";
 		
 		handle_database(requete);
@@ -139,7 +139,7 @@ io.sockets.on('connection', function (socket, result) {
 		var arrivee = ""+data.arr;
 		
 		var requete =
-		"INSERT INTO Trajet (depart, arrivee)" +
+		"INSERT INTO trajet (depart, arrivee)" +
 		" VALUES (\'"+depart+"\',\'"+arrivee+"\')";
 		
 		handle_database(requete);
@@ -151,7 +151,7 @@ io.sockets.on('connection', function (socket, result) {
 		var longitude = data.lon;
 		
 		var requete =
-		"INSERT INTO Deplacement (latitude, longitude, date, time, datetime)" +
+		"INSERT INTO deplacement (latitude, longitude, date, time, datetime)" +
 		" VALUES ("+latitude+", "+longitude+", NOW(), NOW(), NOW())";
 		
 		handle_database(requete);
@@ -163,4 +163,4 @@ io.sockets.on('connection', function (socket, result) {
 	});
 });
 
-server.listen(8080);
+server.listen(6666);
