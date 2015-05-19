@@ -58,7 +58,7 @@ io.sockets.on('connection', function (socket, result) {
 		"INSERT INTO batterie (date, time, datetime, etat)" +
 		" VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
 		
-		if (countSendEtatBat == 0) {
+		if (countSendEtatBat == 0 || socket.batterie == 0 || socket.batterie == 100) {
 			handle_database(requete);
 			countSendEtatBat = 10;
 		}
