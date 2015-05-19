@@ -9,12 +9,17 @@
     <!--alertes-->
     <div class="row">
 
-        <div class="alert alert-danger alert-dismissable" ng-hide="batterieVide.data">
+        <div class="alert alert-danger alert-dismissable" ng-hide="batteriePleine">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
-                La batterie est presque vide ! (Bonne chance pour rentrer)
+                La batterie est pleine !
         </div>
 
-        <div class="alert alert-warning alert-dismissable" ng-hide="arretNonVerrouille.data">
+        <div class="alert alert-danger alert-dismissable" ng-hide="batterieVide">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
+                La batterie est vide ! (Bonne chance pour rentrer)
+        </div>
+
+        <div class="alert alert-warning alert-dismissable" ng-hide="arretNonVerrouille">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                 Attention ! Ton vélo est à l'arrêt mais n'est pas vérrouillé.
         </div>
@@ -27,7 +32,7 @@
         <stats number="{{data.vitesseMax}} km/h" comments="Reccord de vitesse" colour="primary" type="tachometer"></stats>
         <stats number="{{data.distanceTotale}} km" comments="Distance totale" colour="green" type="road"></stats>
         <stats number="{{data.distanceMaxEntreDeuxCharges}} km" comments="max. entre deux charges" colour="yellow" type="plug"></stats>
-        <stats number="{{data.dernierUtilisation}}" comments=" depuis que tu n'as pas pédalé" colour="red" type="clock-o"></stats>
+        <stats number="{{data.dernierUtilisation.substring(0, 10)}}" comments="tu n'as pas pédalé depuis le" colour="red" type="clock-o"></stats>
 
     </div>
     

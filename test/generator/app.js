@@ -2,6 +2,7 @@
 var http = require('http');
 var fs = require('fs');
 var mysql = require('mysql');
+var countSendEtatBat = 10;
 
 // Création de la connexion vers la base de données
 var pool = mysql.createPool({
@@ -57,7 +58,13 @@ io.sockets.on('connection', function (socket, result) {
 		"INSERT INTO batterie (date, time, datetime, etat)" +
 		" VALUES (NOW(), NOW(), NOW(), "+socket.batterie+")";
 		
-		handle_database(requete);
+		if (countSendEtatBat == 0 || socket.batterie == 0 || socket.batterie == 100) {
+			handle_database(requete);
+			countSendEtatBat = 10;
+		}
+		else{
+			countSendEtatBat--;
+		}
     });
 
 	// On récupère un évènement sur la distance parcourue
