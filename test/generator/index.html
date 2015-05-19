@@ -175,6 +175,12 @@
 				tmp = 0;
 				socket.emit('message', 'INFO : Un problème est survenu, plus de batterie pour terminer le parcours');
 				window.clearInterval(intervalVitesse);
+				
+				chargeBatterie = 0;
+				socket.emit('message', "INFO : La batterie est complètement déchargée");
+				// On émet les données records entre deux rechargement
+				socket.emit('recordDistanceMax', distanceMaxEntreDeuxCharges);
+				distanceMaxEntreDeuxCharges = 0;
 			}
 			
 			chargeBatterie -= tmp;
@@ -271,6 +277,9 @@
 			if(distanceAParcourir <= 0){
 				distanceAParcourir = document.getElementById("distanceInputText").value;
 				distanceParcourue = 0;
+			}
+			else{
+				distanceAParcourir = document.getElementById("distanceInputText").value;
 			}
 			socket.emit('message', 'INFO : Le parcours commence, distance à parcourir : '+distanceAParcourir);
 			intervalVitesse = setInterval(function() {genererVitesse()}, cycleVitesse);
