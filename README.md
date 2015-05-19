@@ -49,6 +49,7 @@ Find out more [Free Angular Themes at StartAngular.com](http://www.startangular.
 
 ### 2.2 Run client
 
+- `cd project-directory`
 - `npm start`
 
 ## 3. Events generator
