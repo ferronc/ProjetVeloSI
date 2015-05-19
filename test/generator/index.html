@@ -65,7 +65,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
 		
-		var socket = io.connect('http://localhost:8080');
+		var socket = io.connect('http://localhost:6666');
 		
 		// Variable pour records
 		var vitesseMax = 0;
@@ -76,8 +76,8 @@
 		   ************************************************* */
 		
 		var chargeBatterie = 50; 	// Etat de charge de la batterie
-		var cycleCharge = 1000;	 	// Temps du cycle pour chaque itération du chargement de la batterie (en milliseconde)
-		var cycleDecharge = 2000; 	// Temps du cycle pour chaque itération du déchargement de la batterie (en milliseconde)
+		var cycleCharge = 100;	 	// Temps du cycle pour chaque itération du chargement de la batterie (en milliseconde)
+		var cycleDecharge = 100; 	// Temps du cycle pour chaque itération du déchargement de la batterie (en milliseconde)
 		
 		// Timing events (to execute a function, over and over again, at specified time intervals)
 		var intervalBatterieCharge; 
