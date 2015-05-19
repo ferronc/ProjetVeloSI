@@ -10,19 +10,17 @@ Nous distinguons deux parties distinctes dans ce projet :
 ## 1. Database
 
 1. Move to database folder
-- cd `test` then `creationBDD` 
-OR
-cd `test\creationBDD`
+- cd `test` then `creationBDD` OR cd `test\creationBDD`
 2. You can find the script to create the database : loutreBDD.sql
 
 ## 2. Client
 
 ### 2.1 Dependencies
 
-[AngularJS] (https://angulars.org/)
-[bower](http://bower.io/)
-[grunt-cli](https://www.npmjs.com/package/grunt-cli)
-[SB Admin] (http://startbootstrap.com/template-overviews/sb-admin/)
+- [AngularJS] (https://angulars.org/)
+- [bower](http://bower.io/)
+- [grunt-cli](https://www.npmjs.com/package/grunt-cli)
+- [SB Admin] (http://startbootstrap.com/template-overviews/sb-admin/)
 
 #### 2.1.1 SB Admin v2.0 rewritten in AngularJS
 
@@ -45,7 +43,7 @@ Find out more [Free Angular Themes at StartAngular.com](http://www.startangular.
 
 - Add sample AJAX calls and make the directives more modular
 
-###### 2.1.1.3 Automation tools
+##### 2.1.1.3 Automation tools
 
 - [Grunt](http://gruntjs.com/)
 
@@ -57,22 +55,19 @@ Find out more [Free Angular Themes at StartAngular.com](http://www.startangular.
 
 ### 3.1 Dependencies
 
-NodeJS (https://nodejs.org/)
-npm (https://www.npmjs.org/)
-socket.io (http://socket.io/)
-mysql (https://www.npmjs.com/package/mysql)
+- NodeJS (https://nodejs.org/)
+- npm (https://www.npmjs.org/)
+- socket.io (http://socket.io/)
+- mysql (https://www.npmjs.com/package/mysql)
 
 ### 3.2 Installation
 
 1. Move to generator folder (test/generator)
-- cd `test` then `generator` 
-OR
-- cd `test\generator`
+- cd `test` then `generator` OR cd `test\generator`
 2. Install dependencies of generator
 - `npm install socket.io` - socket.io install
 - `npm install mysql` - mysql install
-OR
-- `npm install` - Use directly the package.json which describe dependencies
+- OR `npm install` - Use directly the package.json which describe dependencies (with socket.io and mysql)
 
 ### 3.3 Run generator
 
