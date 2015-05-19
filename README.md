@@ -10,8 +10,8 @@ Nous distinguons deux parties distinctes dans ce projet :
 ## 1. Database
 
 1. Move to database folder
-- cd `test` then `creationBDD` OR cd `test\creationBDD`
-2. You can find the script to create the database : loutreBDD.sql
+- `cd test` then `cd creationBDD` OR `cd test\creationBDD`
+2. You can find the script to create the database : `loutreBDD.sql`
 
 ## 2. Client
 
@@ -34,7 +34,7 @@ Find out more [Free Angular Themes at StartAngular.com](http://www.startangular.
 1. Clone this project or Download that ZIP file
 2. Make sure you have angularjs [bower](http://bower.io/), [grunt-cli](https://www.npmjs.com/package/grunt-cli) and  [npm](https://www.npmjs.org/) installed globally
 3. On the command prompt run the following commands
-- cd `project-directory`
+- `cd project-directory`
 - `npm install` - bower install is ran from the postinstall
 - `npm start` - a shortcut for `grunt serve`
 - `npm run dist` - a shortcut for `grunt serve:dist` to minify the files for deployment
@@ -63,7 +63,7 @@ Find out more [Free Angular Themes at StartAngular.com](http://www.startangular.
 ### 3.2 Installation
 
 1. Move to generator folder (test/generator)
-- cd `test` then `generator` OR cd `test\generator`
+- `cd test` then `cd generator` OR `cd test\generator`
 2. Install dependencies of generator
 - `npm install socket.io` - socket.io install
 - `npm install mysql` - mysql install
